@@ -2,14 +2,22 @@ require("dotenv").config();
 
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize({
-  database: process.env.DATABASE,
-  username: "postgres",
-  password: process.env.PASSWORD,
-  host: process.env.HOST,
-  port: 5432,
-  dialect: "postgres",
-});
+const sequelize = new Sequelize(
+  process.env.DATABASE,
+  process.env.USER,
+  process.env.PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: 5432,
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: {
+          require: true,
+          rejectUnauthorized: false
+      }
+  }
+  }
+);
 
 const db = {};
 
@@ -21,6 +29,5 @@ Roles.hasMany(Users);
 Users.belongsTo(Roles);
 db.users = Users;
 db.Roles = Roles;
-
 
 module.exports = db;
